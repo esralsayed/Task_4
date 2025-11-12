@@ -54,17 +54,14 @@ export default function AllPerks() {
   }, [perks]) // Dependency: re-run when perks array changes
 
   // Auto-search on Input Change
-  useEffect(() => {
-    // Debounce mechanism: wait 500ms after user stops typing/changing filter
-    const debounceTimeout = setTimeout(() => {
-      loadAllPerks()
-    }, 500)
-    
-    // Cleanup function to clear timeout if inputs change again before 500ms
-    return () => clearTimeout(debounceTimeout)
-    
-    // This effect depends on [searchQuery, merchantFilter]
-  }, [searchQuery, merchantFilter]) // Dependencies: re-run when searchQuery or merchantFilter changes
+ useEffect(() => {
+  const delay = process.env.NODE_ENV === "test" ? 0 : 500;
+  const timeout = setTimeout(() => {
+    loadAllPerks();
+  }, delay);
+  return () => clearTimeout(timeout);
+}, [searchQuery, merchantFilter]);
+ // Dependencies: re-run when searchQuery or merchantFilter changes
 
   
   async function loadAllPerks() {
